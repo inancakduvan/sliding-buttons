@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600&display=swap');
+
+body {
+    margin: 0;
+}
+
+body, button {
+    font-family: Quicksand, 'sans-serif';
+}
+
+.sliding-button-container {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    width: 100%;
+    height: 80px;
+    touch-action: pan-y;
+}
+
+.sliding-body {
+    z-index: 2;
+    position: absolute;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.sliding-buttons-to-left,
+.sliding-buttons-to-right {
+    position: absolute;
+    top: 0;
+    display: flex;
+    height: 100%;
+}
+
+.sliding-buttons-to-right {
+    right: 0;
+    justify-content: flex-end;
+}
+
+.sliding-buttons-to-left {
+    left: 0;
+}
+
+.sliding-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    max-width: 200px;
+    min-width: 80px;
+    height: 100%;
+    background: salmon;
+}
+
+#element {
+    border-bottom: 1px solid #dadada;
+    background: #fff;
+}
+    
+#element .sliding-body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fafafa;
+}
+
+#element .sliding-button {
+    font-weight: 600;
+    background: #edf2f4;
+    border-right: 1px solid #dadada;
+}
+
+#element .sliding-buttons-to-right .sliding-button:nth-child(2) {
+    background: #e63946;
+    color: #FFF;
+    border-right: none;
+}
+
+.app-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
