@@ -14,6 +14,21 @@ function getDirection(distanceValue) {
     return directionMoved;
 }
 
+function translateButtons(element, direction, x, max) {
+    if(direction === "right") {
+        const container = element.querySelector(".sliding-buttons-to-right");
+        const buttons = container.querySelectorAll(".sliding-button");
+        const firstButton = buttons[0];
+        const secondButton = buttons[1];
+
+        const firstButtonX = Math.abs(x) > max ? 0 : x;
+        const secondButtonX = Math.abs(x) > max ? 0 : x;
+        
+        firstButton.style.transform = `translateX(${(firstButtonX / 500)}px)`;
+        secondButton.style.transform = `translateX(${(secondButtonX / 1000)}px)`;
+    }
+}
+
 function init(selector, _config) {
     const config = {
 
@@ -92,7 +107,9 @@ function init(selector, _config) {
 
                 directionMoved = null;
                 lastX = 0;
-            } 
+            } else {
+                
+            }
 
             object.removeEventListener('touchmove', swipeIt, false);
         }, false);
@@ -115,6 +132,8 @@ function init(selector, _config) {
 
         let distanceValue = distance;
 
+        console.log(directionMoved)
+
         if(!(directionMoved == null)) { 
             if(directionMoved === "left") {
                 if(Math.abs(lastX) > bodyWidth - rightDistanceLimit) {
@@ -130,6 +149,8 @@ function init(selector, _config) {
                 } else {
                     distanceValue = distance;
                 }
+
+                translateButtons(parent, directionMoved, lastX, leftDistanceLimit * 2);
             }
         }
 

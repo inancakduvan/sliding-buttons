@@ -49,7 +49,15 @@ body, button {
     max-width: 200px;
     min-width: 80px;
     height: 100%;
-    background: salmon;
+    transition: 0.25s;
+}
+
+.sliding-buttons-to-right .sliding-button:nth-child(1) {
+    transform: translateX(200%);
+}
+
+.sliding-buttons-to-right .sliding-button:nth-child(2) {
+    transform: translateX(100%);
 }
 
 #element {
