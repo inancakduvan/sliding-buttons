@@ -21,11 +21,16 @@ function translateButtons(element, direction, x, max) {
         const firstButton = buttons[0];
         const secondButton = buttons[1];
 
-        const firstButtonX = Math.abs(x) > max ? 0 : x;
-        const secondButtonX = Math.abs(x) > max ? 0 : x;
+        const firstButtonPercentage =  (x * 100) / max;
+        const firstButtonX = 100 - (-1 * firstButtonPercentage);
+
+        const secondButtonPercentage =  (x * 100) / (max / 2);
+        const secondButtonX = 100 - (-1 * secondButtonPercentage);
+
+        console.log(firstButtonX, secondButtonX)
         
-        firstButton.style.transform = `translateX(${(firstButtonX / 500)}px)`;
-        secondButton.style.transform = `translateX(${(secondButtonX / 1000)}px)`;
+        firstButton.style.transform = `translateX(${firstButtonX < 0 ? 0 : firstButtonX}%)`;
+        secondButton.style.transform = `translateX(${secondButtonX < 0 ? 0 : secondButtonX}%)`;
     }
 }
 
@@ -94,6 +99,21 @@ function init(selector, _config) {
                 if(directionMoved === "right") {
                     if(Math.abs(lastX) > rightDistanceLimit * 0.75) {
                         object.style.left = -1 * rightDistanceLimit + "px";
+
+                        const container = element.querySelector(".sliding-buttons-to-right");
+                        const buttons = container.querySelectorAll(".sliding-button");
+
+                        for(let i = 0; i < buttons.length; i++) {
+                            const btn = buttons[i];
+                            btn.style.transition = TRANSITION_DURATION / 1000 + "s";
+                            btn.style.transform = `translateX(${0}%)`;
+        
+                            const timeoutDurationBtn = TRANSITION_DURATION + 10;
+                            const timeoutBtn = setTimeout(() => {
+                                btn.style.transition = "unset";
+                                clearTimeout(timeoutBtn);
+                            }, timeoutDurationBtn);
+                        }
                     } else {
                         object.style.left = 0;
                     }
@@ -131,8 +151,6 @@ function init(selector, _config) {
         const directionMoved = getDirection(lastX);
 
         let distanceValue = distance;
-
-        console.log(directionMoved)
 
         if(!(directionMoved == null)) { 
             if(directionMoved === "left") {

@@ -49,7 +49,7 @@ body, button {
     max-width: 200px;
     min-width: 80px;
     height: 100%;
-    transition: 0.25s;
+    /* transition: 0.25s; */
 }
 
 .sliding-buttons-to-right .sliding-button:nth-child(1) {
