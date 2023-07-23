@@ -26,11 +26,25 @@ function translateButtons(element, direction, x, max) {
 
         const secondButtonPercentage =  (x * 100) / (max / 2);
         const secondButtonX = 100 - (-1 * secondButtonPercentage);
-
-        console.log(firstButtonX, secondButtonX)
         
         firstButton.style.transform = `translateX(${firstButtonX < 0 ? 0 : firstButtonX}%)`;
         secondButton.style.transform = `translateX(${secondButtonX < 0 ? 0 : secondButtonX}%)`;
+    }
+
+    if(direction === "left") {
+        const container = element.querySelector(".sliding-buttons-to-left");
+        const buttons = container.querySelectorAll(".sliding-button");
+        const firstButton = buttons[0];
+        const secondButton = buttons[1];
+
+        const firstButtonPercentage =  (x * 100) / (max / 2);
+        const firstButtonX = (firstButtonPercentage) - 100;
+
+        const secondButtonPercentage =  (x * 100) / (max);
+        const secondButtonX = (secondButtonPercentage) - 100;
+        
+        firstButton.style.transform = `translateX(${firstButtonX > 0 ? 0 : firstButtonX}%)`;
+        secondButton.style.transform = `translateX(${secondButtonX > 0 ? 0 : secondButtonX}%)`;
     }
 }
 
@@ -45,9 +59,8 @@ function init(selector, _config) {
 
     const parent = document.querySelector(selector);
 
-    var object = parent.querySelector(".sliding-body"),
+    let object = parent.querySelector(".sliding-body"),
     initX, firstX, lastX;
-
 
     const bodyElement = parent.querySelector(".sliding-body");
     const bodyWidth = bodyElement.getBoundingClientRect().width;
@@ -58,18 +71,18 @@ function init(selector, _config) {
     const leftDistanceLimit = leftButtonsElement ? leftButtonsElement.getBoundingClientRect().width : 0;
     const rightDistanceLimit = rightButtonsElement ? rightButtonsElement.getBoundingClientRect().width : 0;
 
-    object.addEventListener('mousedown', function(e) {
-        e.preventDefault();
-        initX = this.offsetLeft;
-        firstX = e.pageX;
+    // object.addEventListener('mousedown', function(e) {
+    //     e.preventDefault();
+    //     initX = this.offsetLeft;
+    //     firstX = e.pageX;
 
-        this.addEventListener('mousemove', dragIt, false);
+    //     this.addEventListener('mousemove', dragIt, false);
 
-        window.addEventListener('mouseup', function() {
-            object.removeEventListener('mousemove', dragIt, false);
-        }, false);
+    //     window.addEventListener('mouseup', function() {
+    //         object.removeEventListener('mousemove', dragIt, false);
+    //     }, false);
 
-    }, false);
+    // }, false);
 
     object.addEventListener('touchstart', function(e) {
         e.preventDefault();
@@ -88,47 +101,44 @@ function init(selector, _config) {
             if(!(directionMoved == null)) {
                 object.style.transition =  (TRANSITION_DURATION / 1000) + "s";
 
+                if(directionMoved === "left" && lastX > leftDistanceLimit * 0.75) {
+                    object.style.left = leftDistanceLimit + "px";
+                } else if (directionMoved === "right" && Math.abs(lastX) > rightDistanceLimit * 0.75) {
+                    object.style.left = -1 * rightDistanceLimit + "px";
+                } else {
+                    object.style.left = 0;
+                }
+
+                let buttons = document.querySelectorAll(".sliding-buttons-to-right .sliding-button");
+                // Reset translate of action buttons 
                 if(directionMoved === "left") {
-                    if(lastX > leftDistanceLimit * 0.75) {
-                        object.style.left = leftDistanceLimit + "px";
-                    } else {
-                        object.style.left = 0;
-                    }
+                    buttons = [document.querySelectorAll(".sliding-buttons-to-left .sliding-button")[1]];
                 } 
 
-                if(directionMoved === "right") {
-                    if(Math.abs(lastX) > rightDistanceLimit * 0.75) {
-                        object.style.left = -1 * rightDistanceLimit + "px";
+                for(let i = 0; i < buttons.length; i++) {
+                    const btn = buttons[i];
+                    btn.style.transition = TRANSITION_DURATION / 1000 + "s";
+                    btn.style.transform = `translateX(${0}%)`;
 
-                        const container = element.querySelector(".sliding-buttons-to-right");
-                        const buttons = container.querySelectorAll(".sliding-button");
-
-                        for(let i = 0; i < buttons.length; i++) {
-                            const btn = buttons[i];
-                            btn.style.transition = TRANSITION_DURATION / 1000 + "s";
-                            btn.style.transform = `translateX(${0}%)`;
+                    const timeoutDurationBtn = TRANSITION_DURATION + 10;
+                    const timeoutBtn = setTimeout(() => {
+                        btn.style.transition = "unset";
+                        clearTimeout(timeoutBtn);
+                    }, timeoutDurationBtn);
+                }
+                //
         
-                            const timeoutDurationBtn = TRANSITION_DURATION + 10;
-                            const timeoutBtn = setTimeout(() => {
-                                btn.style.transition = "unset";
-                                clearTimeout(timeoutBtn);
-                            }, timeoutDurationBtn);
-                        }
-                    } else {
-                        object.style.left = 0;
-                    }
-                } 
-        
+                // Reset transition of body
                 const timeoutDuration = TRANSITION_DURATION + 10;
                 const timeout = setTimeout(() => {
                     object.style.transition = "unset";
                     clearTimeout(timeout);
                 }, timeoutDuration);
+                //
 
+                // Reset direction an last position value
                 directionMoved = null;
                 lastX = 0;
-            } else {
-                
             }
 
             object.removeEventListener('touchmove', swipeIt, false);
@@ -153,23 +163,17 @@ function init(selector, _config) {
         let distanceValue = distance;
 
         if(!(directionMoved == null)) { 
-            if(directionMoved === "left") {
-                if(Math.abs(lastX) > bodyWidth - rightDistanceLimit) {
-                    distanceValue = bodyWidth - rightDistanceLimit;
-                } else {
-                    distanceValue = distance;
-                }
+            if(directionMoved === "left" && Math.abs(lastX) > bodyWidth - rightDistanceLimit) {
+                distanceValue = bodyWidth - rightDistanceLimit;
+            } else if(directionMoved === "right" && Math.abs(lastX) > bodyWidth - leftDistanceLimit) {
+                distanceValue = leftDistanceLimit - bodyWidth;
+            } else {
+                distanceValue = distance;
             }
 
-            if(directionMoved === "right") {
-                if(Math.abs(lastX) > bodyWidth - leftDistanceLimit) {
-                    distanceValue = leftDistanceLimit - bodyWidth;
-                } else {
-                    distanceValue = distance;
-                }
-
-                translateButtons(parent, directionMoved, lastX, leftDistanceLimit * 2);
-            }
+            // Translate action buttons
+            const maxTranslateValue = directionMoved === "right" ? leftDistanceLimit : rightDistanceLimit;
+            translateButtons(parent, directionMoved, lastX, maxTranslateValue);
         }
 
         this.style.left = distanceValue + 'px';
