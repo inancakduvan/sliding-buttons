@@ -1,5 +1,5 @@
 function getDirection(distanceValue) {
-    const MIN_DISTANCE = 5;
+    const MIN_DISTANCE = 0.5;
 
     let directionMoved = null;
 
@@ -98,17 +98,7 @@ function init(selector, _config) {
             const TRANSITION_DURATION = 250;
             let directionMoved = getDirection(lastX);
 
-            if(!(directionMoved == null)) {
-                object.style.transition =  (TRANSITION_DURATION / 1000) + "s";
-
-                if(directionMoved === "left" && lastX > leftDistanceLimit * 0.75) {
-                    object.style.left = leftDistanceLimit + "px";
-                } else if (directionMoved === "right" && Math.abs(lastX) > rightDistanceLimit * 0.75) {
-                    object.style.left = -1 * rightDistanceLimit + "px";
-                } else {
-                    object.style.left = 0;
-                }
-
+            const resetTranslate = () => {
                 let buttons = document.querySelectorAll(".sliding-buttons-to-right .sliding-button");
                 // Reset translate of action buttons 
                 if(directionMoved === "left") {
@@ -127,6 +117,23 @@ function init(selector, _config) {
                     }, timeoutDurationBtn);
                 }
                 //
+            }
+
+            if(!(directionMoved == null)) {
+                const TRIGGER_MARGIN = 0.6;
+                object.style.transition =  (TRANSITION_DURATION / 1000) + "s";
+
+                if(directionMoved === "left" && lastX > leftDistanceLimit * TRIGGER_MARGIN) {
+                    object.style.left = leftDistanceLimit + "px";
+                    resetTranslate();
+                } else if (directionMoved === "right" && Math.abs(lastX) > rightDistanceLimit * TRIGGER_MARGIN) {
+                    object.style.left = -1 * rightDistanceLimit + "px";
+                    resetTranslate();
+                } else {
+                    object.style.left = 0;
+                }
+
+              
         
                 // Reset transition of body
                 const timeoutDuration = TRANSITION_DURATION + 10;
