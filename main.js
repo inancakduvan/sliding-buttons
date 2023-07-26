@@ -100,7 +100,7 @@ function init(selector, _config) {
 
         window.addEventListener('touchend', function(e) {
             e.preventDefault();
-            const TRANSITION_DURATION = 250;
+            const TRANSITION_DURATION = 350;
             let directionMoved = getDirection(lastX);
 
             const setShowPositionOfButtons = () => {
@@ -128,7 +128,7 @@ function init(selector, _config) {
             }
 
             const resetButtonsTranslate = () => {
-                const TRANSITION_DURATION = 250;
+                const TRANSITION_DURATION = 350;
 
                 const buttonsRight = document.querySelectorAll(".sliding-buttons-to-right .sliding-button");
                 const buttonsLeft = document.querySelectorAll(".sliding-buttons-to-left .sliding-button");
