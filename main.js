@@ -100,7 +100,7 @@ function init(selector, _config) {
 
         window.addEventListener('touchend', function(e) {
             e.preventDefault();
-            const TRANSITION_DURATION = 350;
+            const TRANSITION_DURATION = 250;
             let directionMoved = getDirection(lastX);
 
             const setShowPositionOfButtons = () => {
@@ -127,8 +127,9 @@ function init(selector, _config) {
                 //
             }
 
+            //
             const resetButtonsTranslate = () => {
-                const TRANSITION_DURATION = 350;
+                const TRANSITION_DURATION = 250;
 
                 const buttonsRight = document.querySelectorAll(".sliding-buttons-to-right .sliding-button");
                 const buttonsLeft = document.querySelectorAll(".sliding-buttons-to-left .sliding-button");
@@ -171,8 +172,6 @@ function init(selector, _config) {
             if(!(directionMoved == null)) {
                 const TRIGGER_MARGIN = 0.6;
                 object.style.transition =  (TRANSITION_DURATION / 1000) + "s";
-
-                console.log(leftDistanceLimit, lastX)
 
                 if(directionMoved === "left" && lastX > leftDistanceLimit * TRIGGER_MARGIN) {
                     object.style.left = leftDistanceLimit + "px";
