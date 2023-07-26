@@ -98,7 +98,7 @@ function init(selector, _config) {
             const TRANSITION_DURATION = 250;
             let directionMoved = getDirection(lastX);
 
-            const resetTranslate = () => {
+            const setShowPositionOfButtons = () => {
                 let buttons = document.querySelectorAll(".sliding-buttons-to-right .sliding-button");
                 // Reset translate of action buttons 
                 if(directionMoved === "left") {
@@ -119,18 +119,60 @@ function init(selector, _config) {
                 //
             }
 
+            const resetButtonsTranslate = () => {
+                const TRANSITION_DURATION = 250;
+
+                const buttonsRight = document.querySelectorAll(".sliding-buttons-to-right .sliding-button");
+                const buttonsLeft = document.querySelectorAll(".sliding-buttons-to-left .sliding-button");
+
+                const buttons = [
+                    {
+                        element: buttonsRight[0],
+                        translateX: 200
+                    },
+                    {
+                        element: buttonsRight[1],
+                        translateX: 100
+                    },
+                    {
+                        element: buttonsLeft[0],
+                        translateX: -100
+                    },
+                    {
+                        element: buttonsLeft[1],
+                        translateX: -200
+                    }
+                ]
+
+                for(let i=0; i < buttons.length; i++) {
+                    const btn = buttons[i];
+
+                    if(btn) {
+                        btn.element.style.transition = TRANSITION_DURATION / 1000 + "s";
+                        btn.element.style.transform = `translateX(${btn.translateX}%)`;
+
+                        const timeoutDurationBtn = TRANSITION_DURATION + 10;
+                        const timeoutBtn = setTimeout(() => {
+                            btn.element.style.transition = "unset";
+                            clearTimeout(timeoutBtn);
+                        }, timeoutDurationBtn);
+                    }
+                }
+            }
+
             if(!(directionMoved == null)) {
                 const TRIGGER_MARGIN = 0.6;
                 object.style.transition =  (TRANSITION_DURATION / 1000) + "s";
 
                 if(directionMoved === "left" && lastX > leftDistanceLimit * TRIGGER_MARGIN) {
                     object.style.left = leftDistanceLimit + "px";
-                    resetTranslate();
+                    setShowPositionOfButtons();
                 } else if (directionMoved === "right" && Math.abs(lastX) > rightDistanceLimit * TRIGGER_MARGIN) {
                     object.style.left = -1 * rightDistanceLimit + "px";
-                    resetTranslate();
+                    setShowPositionOfButtons();
                 } else {
                     object.style.left = 0;
+                    resetButtonsTranslate();
                 }
 
               
