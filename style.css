@@ -89,6 +89,9 @@ body, button {
 #element .sliding-button {
     font-weight: 600;
     background: #edf2f4;
+}
+
+#element .sliding-buttons-to-left .sliding-button {
     border-right: 1px solid #dadada;
 }
 
