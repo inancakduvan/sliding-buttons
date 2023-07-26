@@ -110,10 +110,10 @@ function init(selector, _config) {
             let directionMoved = getDirection(lastX);
 
             const setShowPositionOfButtons = () => {
-                let buttons = document.querySelectorAll(".sliding-buttons-to-right .sliding-button");
+                let buttons = parent.querySelectorAll(".sliding-buttons-to-right .sliding-button");
                 // Reset translate of action buttons 
                 if(directionMoved === "left") {
-                    buttons = document.querySelectorAll(".sliding-buttons-to-left .sliding-button");
+                    buttons = parent.querySelectorAll(".sliding-buttons-to-left .sliding-button");
                 } 
 
                 for(let i = 0; i < buttons.length; i++) {
@@ -137,8 +137,8 @@ function init(selector, _config) {
             const resetButtonsTranslate = () => {
                 const TRANSITION_DURATION = 250;
 
-                const buttonsRight = document.querySelectorAll(".sliding-buttons-to-right .sliding-button");
-                const buttonsLeft = document.querySelectorAll(".sliding-buttons-to-left .sliding-button");
+                const buttonsRight = parent.querySelectorAll(".sliding-buttons-to-right .sliding-button");
+                const buttonsLeft = parent.querySelectorAll(".sliding-buttons-to-left .sliding-button");
 
                 const buttons = [
                     {
