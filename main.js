@@ -50,7 +50,9 @@ function translateButtons(element, direction, x, max) {
 
 function init(selector, _config) {
     const config = {
-
+        style: {
+            height: 80
+        }
     };
 
     if(_config) {
@@ -58,6 +60,10 @@ function init(selector, _config) {
     }
 
     const parent = document.querySelector(selector);
+
+    if(config.style && config.style.height) {
+        parent.style.height = config.style.height + "px";
+    }
 
     let object = parent.querySelector(".sliding-body"),
     initX, firstX, lastX;
@@ -239,3 +245,8 @@ function init(selector, _config) {
 }
 
 init("#element");
+init("#element2", {
+    style: {
+        height: 60
+    }
+});

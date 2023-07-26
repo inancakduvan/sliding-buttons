@@ -74,28 +74,28 @@ body, button {
     transform: translateX(100%);
 }
 
-#element {
+.element {
     border-bottom: 1px solid #dadada;
     background: #fff;
 }
     
-#element .sliding-body {
+.element .sliding-body {
     display: flex;
     align-items: center;
     justify-content: center;
     background: #fafafa;
 }
 
-#element .sliding-button {
+.element .sliding-button {
     font-weight: 600;
     background: #edf2f4;
 }
 
-#element .sliding-buttons-to-left .sliding-button {
+.element .sliding-buttons-to-left .sliding-button {
     border-right: 1px solid #dadada;
 }
 
-#element .sliding-buttons-to-right .sliding-button:nth-child(2) {
+.element .sliding-buttons-to-right .sliding-button:nth-child(2) {
     background: #e63946;
     color: #FFF;
     border-right: none;
