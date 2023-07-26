@@ -8,6 +8,11 @@ body, button {
     font-family: Quicksand, 'sans-serif';
 }
 
+.sliding-button-container,
+.sliding-button-container * {
+    box-sizing: border-box;
+}
+
 .sliding-button-container {
     position: relative;
     overflow: hidden;
@@ -47,9 +52,9 @@ body, button {
     align-items: center;
     justify-content: center;
     flex: 1;
-    max-width: 200px;
     min-width: 80px;
     height: 100%;
+    padding: 0 8px;
 }
 
 .sliding-buttons-to-left .sliding-button:nth-child(1) {

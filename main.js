@@ -24,11 +24,11 @@ function translateButtons(element, direction, x, max) {
         const firstButtonPercentage =  (x * 100) / max;
         const firstButtonX = 100 - (-1 * firstButtonPercentage);
 
-        const secondButtonPercentage =  (x * 100) / (max / 2);
+        const secondButtonPercentage =  (x * 100) / (secondButton ? secondButton.getBoundingClientRect().width : 1);
         const secondButtonX = 100 - (-1 * secondButtonPercentage);
         
-        firstButton.style.transform = `translateX(${firstButtonX < 0 ? 0 : firstButtonX}%)`;
-        secondButton.style.transform = `translateX(${secondButtonX < 0 ? 0 : secondButtonX}%)`;
+        firstButton && (firstButton.style.transform = `translateX(${firstButtonX < 0 ? 0 : firstButtonX}%)`);
+        secondButton && (secondButton.style.transform = `translateX(${secondButtonX < 0 ? 0 : secondButtonX}%)`);
     }
 
     if(direction === "left") {
@@ -37,14 +37,14 @@ function translateButtons(element, direction, x, max) {
         const firstButton = buttons[0];
         const secondButton = buttons[1];
 
-        const firstButtonPercentage =  (x * 100) / (max / 2);
+        const firstButtonPercentage =  (x * 100) / (firstButton ? firstButton.getBoundingClientRect().width : 1);
         const firstButtonX = (firstButtonPercentage) - 100;
 
         const secondButtonPercentage =  (x * 100) / (max);
         const secondButtonX = (secondButtonPercentage) - 100;
         
-        firstButton.style.transform = `translateX(${firstButtonX > 0 ? 0 : firstButtonX}%)`;
-        secondButton.style.transform = `translateX(${secondButtonX > 0 ? 0 : secondButtonX}%)`;
+        firstButton && (firstButton.style.transform = `translateX(${firstButtonX > 0 ? 0 : firstButtonX}%)`);
+        secondButton && (secondButton.style.transform = `translateX(${secondButtonX > 0 ? 0 : secondButtonX}%)`);
     }
 }
 
@@ -68,8 +68,13 @@ function init(selector, _config) {
     const leftButtonsElement = parent.querySelector(".sliding-buttons-to-left");
     const rightButtonsElement = parent.querySelector(".sliding-buttons-to-right");
 
-    const leftDistanceLimit = leftButtonsElement ? leftButtonsElement.getBoundingClientRect().width : 0;
-    const rightDistanceLimit = rightButtonsElement ? rightButtonsElement.getBoundingClientRect().width : 0;
+    let leftDistanceLimit = leftButtonsElement ? leftButtonsElement.getBoundingClientRect().width : 0;
+    let rightDistanceLimit = rightButtonsElement ? rightButtonsElement.getBoundingClientRect().width : 0;
+
+    setTimeout(() => {
+        leftDistanceLimit = leftButtonsElement ? leftButtonsElement.getBoundingClientRect().width : 0;
+        rightDistanceLimit = rightButtonsElement ? rightButtonsElement.getBoundingClientRect().width : 0;
+    }, 100)
 
     // object.addEventListener('mousedown', function(e) {
     //     e.preventDefault();
@@ -102,19 +107,22 @@ function init(selector, _config) {
                 let buttons = document.querySelectorAll(".sliding-buttons-to-right .sliding-button");
                 // Reset translate of action buttons 
                 if(directionMoved === "left") {
-                    buttons = [document.querySelectorAll(".sliding-buttons-to-left .sliding-button")[1]];
+                    buttons = document.querySelectorAll(".sliding-buttons-to-left .sliding-button");
                 } 
 
                 for(let i = 0; i < buttons.length; i++) {
                     const btn = buttons[i];
-                    btn.style.transition = TRANSITION_DURATION / 1000 + "s";
-                    btn.style.transform = `translateX(${0}%)`;
+                    
+                    if(btn) {
+                        btn.style.transition = TRANSITION_DURATION / 1000 + "s";
+                        btn.style.transform = `translateX(${0}%)`;
 
-                    const timeoutDurationBtn = TRANSITION_DURATION + 10;
-                    const timeoutBtn = setTimeout(() => {
-                        btn.style.transition = "unset";
-                        clearTimeout(timeoutBtn);
-                    }, timeoutDurationBtn);
+                        const timeoutDurationBtn = TRANSITION_DURATION + 10;
+                        const timeoutBtn = setTimeout(() => {
+                            btn.style.transition = "unset";
+                            clearTimeout(timeoutBtn);
+                        }, timeoutDurationBtn);
+                    }
                 }
                 //
             }
@@ -147,7 +155,7 @@ function init(selector, _config) {
                 for(let i=0; i < buttons.length; i++) {
                     const btn = buttons[i];
 
-                    if(btn) {
+                    if(btn && btn.element) {
                         btn.element.style.transition = TRANSITION_DURATION / 1000 + "s";
                         btn.element.style.transform = `translateX(${btn.translateX}%)`;
 
@@ -163,6 +171,8 @@ function init(selector, _config) {
             if(!(directionMoved == null)) {
                 const TRIGGER_MARGIN = 0.6;
                 object.style.transition =  (TRANSITION_DURATION / 1000) + "s";
+
+                console.log(leftDistanceLimit, lastX)
 
                 if(directionMoved === "left" && lastX > leftDistanceLimit * TRIGGER_MARGIN) {
                     object.style.left = leftDistanceLimit + "px";
@@ -221,7 +231,7 @@ function init(selector, _config) {
             }
 
             // Translate action buttons
-            const maxTranslateValue = directionMoved === "right" ? leftDistanceLimit : rightDistanceLimit;
+            const maxTranslateValue = directionMoved === "left" ? leftDistanceLimit : rightDistanceLimit;
             translateButtons(parent, directionMoved, lastX, maxTranslateValue);
         }
 
