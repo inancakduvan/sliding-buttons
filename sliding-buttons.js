@@ -126,7 +126,7 @@ function initSlidingButton(selector, _config) {
     // }, false);
 
     object.addEventListener('touchstart', function(e) {
-        e.preventDefault();
+        if (e.cancelable) e.preventDefault();
         initX = this.offsetLeft;
 
         var touch = e.touches;
@@ -135,7 +135,7 @@ function initSlidingButton(selector, _config) {
         this.addEventListener('touchmove', swipeIt, false);
 
         window.addEventListener('touchend', function(e) {
-            e.preventDefault();
+            if (e.cancelable) e.preventDefault();
             const TRANSITION_DURATION = 250;
             let directionMoved = getDirection(lastX);
 
