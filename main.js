@@ -294,6 +294,14 @@ function init(selector, _config) {
                     distanceValue = distance;
                 }
 
+                if(directionMoved === "left" && leftDistanceLimit === 0) {
+                    distanceValue = 0;
+                }
+
+                if(directionMoved === "right" && rightDistanceLimit === 0) {
+                    distanceValue = 0;
+                }
+
                 // Translate action buttons
                 if(config.animation) {
                     const maxTranslateValue = directionMoved === "left" ? leftDistanceLimit : rightDistanceLimit;
@@ -301,7 +309,7 @@ function init(selector, _config) {
                 }
             }
 
-        this.style.left = distanceValue + 'px';
+            this.style.left = distanceValue + 'px';
         }
     }
 }
@@ -317,3 +325,5 @@ init("#element4", {
     animation: true
 });
 init("#element5");
+init("#element6");
+init("#element7");
