@@ -48,8 +48,29 @@ function translateButtons(element, direction, x, max) {
     }
 }
 
+function removeExtraButtons(parent) {
+    const MAX_BUTTON_LENGTH = 2;
+
+    const leftButtons = parent.querySelectorAll(".sliding-buttons-to-left .sliding-button");
+    const rightButtons = parent.querySelectorAll(".sliding-buttons-to-right .sliding-button");
+
+    for(let i = 0; i < leftButtons.length;i++) {
+        if(i >= MAX_BUTTON_LENGTH) {
+            leftButtons[i].remove();
+        }
+    }
+
+    for(let i = 0; i < rightButtons.length;i++) {
+        if(i >= MAX_BUTTON_LENGTH) {
+            rightButtons[i].remove();
+        }
+    }
+}
+
 function init(selector, _config) {
     const config = {
+        isTouchable: false,
+        animation: false,
         style: {
             height: 80
         }
@@ -60,6 +81,18 @@ function init(selector, _config) {
     }
 
     const parent = document.querySelector(selector);
+    removeExtraButtons(parent);
+
+    // Reset translate values 
+    if(!config.animation) {
+        const btns = parent.querySelectorAll(".sliding-button");
+        for(let i = 0; i < btns.length; i++) {
+            const btn = btns[i];
+            btn.style.transform = "translateX(0)";
+            btn.style.transition = "none";
+        }
+    }
+    //
 
     if(config.style && config.style.height) {
         parent.style.height = config.style.height + "px";
@@ -80,6 +113,8 @@ function init(selector, _config) {
     setTimeout(() => {
         leftDistanceLimit = leftButtonsElement ? leftButtonsElement.getBoundingClientRect().width : 0;
         rightDistanceLimit = rightButtonsElement ? rightButtonsElement.getBoundingClientRect().width : 0;
+
+        config.isTouchable = true;
     }, 100)
 
     // object.addEventListener('mousedown', function(e) {
@@ -110,67 +145,71 @@ function init(selector, _config) {
             let directionMoved = getDirection(lastX);
 
             const setShowPositionOfButtons = () => {
-                let buttons = parent.querySelectorAll(".sliding-buttons-to-right .sliding-button");
-                // Reset translate of action buttons 
-                if(directionMoved === "left") {
-                    buttons = parent.querySelectorAll(".sliding-buttons-to-left .sliding-button");
-                } 
+                if(config.animation) {
+                    let buttons = parent.querySelectorAll(".sliding-buttons-to-right .sliding-button");
+                    // Reset translate of action buttons 
+                    if(directionMoved === "left") {
+                        buttons = parent.querySelectorAll(".sliding-buttons-to-left .sliding-button");
+                    } 
 
-                for(let i = 0; i < buttons.length; i++) {
-                    const btn = buttons[i];
-                    
-                    if(btn) {
-                        btn.style.transition = TRANSITION_DURATION / 1000 + "s";
-                        btn.style.transform = `translateX(${0}%)`;
+                    for(let i = 0; i < buttons.length; i++) {
+                        const btn = buttons[i];
+                        
+                        if(btn) {
+                            btn.style.transition = TRANSITION_DURATION / 1000 + "s";
+                            btn.style.transform = `translateX(${0}%)`;
 
-                        const timeoutDurationBtn = TRANSITION_DURATION + 10;
-                        const timeoutBtn = setTimeout(() => {
-                            btn.style.transition = "unset";
-                            clearTimeout(timeoutBtn);
-                        }, timeoutDurationBtn);
+                            const timeoutDurationBtn = TRANSITION_DURATION + 10;
+                            const timeoutBtn = setTimeout(() => {
+                                btn.style.transition = "unset";
+                                clearTimeout(timeoutBtn);
+                            }, timeoutDurationBtn);
+                        }
                     }
+                    //
                 }
-                //
             }
 
             //
             const resetButtonsTranslate = () => {
-                const TRANSITION_DURATION = 250;
+                if(config.animation) {
+                    const TRANSITION_DURATION = 250;
 
-                const buttonsRight = parent.querySelectorAll(".sliding-buttons-to-right .sliding-button");
-                const buttonsLeft = parent.querySelectorAll(".sliding-buttons-to-left .sliding-button");
+                    const buttonsRight = parent.querySelectorAll(".sliding-buttons-to-right .sliding-button");
+                    const buttonsLeft = parent.querySelectorAll(".sliding-buttons-to-left .sliding-button");
 
-                const buttons = [
-                    {
-                        element: buttonsRight[0],
-                        translateX: 200
-                    },
-                    {
-                        element: buttonsRight[1],
-                        translateX: 100
-                    },
-                    {
-                        element: buttonsLeft[0],
-                        translateX: -100
-                    },
-                    {
-                        element: buttonsLeft[1],
-                        translateX: -200
-                    }
-                ]
+                    const buttons = [
+                        {
+                            element: buttonsRight[0],
+                            translateX: 200
+                        },
+                        {
+                            element: buttonsRight[1],
+                            translateX: 100
+                        },
+                        {
+                            element: buttonsLeft[0],
+                            translateX: -100
+                        },
+                        {
+                            element: buttonsLeft[1],
+                            translateX: -200
+                        }
+                    ]
 
-                for(let i=0; i < buttons.length; i++) {
-                    const btn = buttons[i];
+                    for(let i=0; i < buttons.length; i++) {
+                        const btn = buttons[i];
 
-                    if(btn && btn.element) {
-                        btn.element.style.transition = TRANSITION_DURATION / 1000 + "s";
-                        btn.element.style.transform = `translateX(${btn.translateX}%)`;
+                        if(btn && btn.element) {
+                            btn.element.style.transition = TRANSITION_DURATION / 1000 + "s";
+                            btn.element.style.transform = `translateX(${btn.translateX}%)`;
 
-                        const timeoutDurationBtn = TRANSITION_DURATION + 10;
-                        const timeoutBtn = setTimeout(() => {
-                            btn.element.style.transition = "unset";
-                            clearTimeout(timeoutBtn);
-                        }, timeoutDurationBtn);
+                            const timeoutDurationBtn = TRANSITION_DURATION + 10;
+                            const timeoutBtn = setTimeout(() => {
+                                btn.element.style.transition = "unset";
+                                clearTimeout(timeoutBtn);
+                            }, timeoutDurationBtn);
+                        }
                     }
                 }
             }
@@ -218,29 +257,34 @@ function init(selector, _config) {
 
     function swipeIt(e) {
         e.preventDefault();
-        var contact = e.touches;
-        const distance = initX + contact[0].pageX - firstX;
-        lastX = distance;
+        
+        if(config.isTouchable) {
+            var contact = e.touches;
+            const distance = initX + contact[0].pageX - firstX;
+            lastX = distance;
 
-        const directionMoved = getDirection(lastX);
+            const directionMoved = getDirection(lastX);
 
-        let distanceValue = distance;
+            let distanceValue = distance;
 
-        if(!(directionMoved == null)) { 
-            if(directionMoved === "left" && Math.abs(lastX) > bodyWidth - rightDistanceLimit) {
-                distanceValue = bodyWidth - rightDistanceLimit;
-            } else if(directionMoved === "right" && Math.abs(lastX) > bodyWidth - leftDistanceLimit) {
-                distanceValue = leftDistanceLimit - bodyWidth;
-            } else {
-                distanceValue = distance;
+            if(!(directionMoved == null)) { 
+                if(directionMoved === "left" && Math.abs(lastX) > bodyWidth - rightDistanceLimit) {
+                    distanceValue = bodyWidth - rightDistanceLimit;
+                } else if(directionMoved === "right" && Math.abs(lastX) > bodyWidth - leftDistanceLimit) {
+                    distanceValue = leftDistanceLimit - bodyWidth;
+                } else {
+                    distanceValue = distance;
+                }
+
+                // Translate action buttons
+                if(config.animation) {
+                    const maxTranslateValue = directionMoved === "left" ? leftDistanceLimit : rightDistanceLimit;
+                    translateButtons(parent, directionMoved, lastX, maxTranslateValue);
+                }
             }
 
-            // Translate action buttons
-            const maxTranslateValue = directionMoved === "left" ? leftDistanceLimit : rightDistanceLimit;
-            translateButtons(parent, directionMoved, lastX, maxTranslateValue);
-        }
-
         this.style.left = distanceValue + 'px';
+        }
     }
 }
 
@@ -250,3 +294,8 @@ init("#element2", {
         height: 60
     }
 });
+init("#element3");
+init("#element4", {
+    animation: true
+});
+init("#element5");
