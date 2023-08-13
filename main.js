@@ -133,7 +133,7 @@ function init(selector, _config) {
         rightDistanceLimit = rightButtonsElement ? rightButtonsElement.getBoundingClientRect().width : 0;
 
         config.isTouchable = true;
-    }, 100)
+    }, 250)
 
     // object.addEventListener('mousedown', function(e) {
     //     e.preventDefault();
