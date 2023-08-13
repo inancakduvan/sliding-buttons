@@ -65,22 +65,7 @@ function removeExtraButtons(parent) {
             rightButtons[i].remove();
         }
     }
-}
-
-function appendStyle() {    const head  = document.getElementsByTagName('head')[0];
-
-    const existingStyle = document.getElementById("slidingButtonsStylesheet");
-
-    if(!existingStyle) {
-        const href = "https://res.cloudinary.com/dd2ownqt9/raw/upload/v1691929097/sliding-buttons.css";
-        const element = document.createElement("link");
-        element.setAttribute("id", "slidingButtonsStylesheet");
-        element.setAttribute("rel", "stylesheet");
-        element.setAttribute("href", href);
-
-        head.appendChild(element);
-    }
-}
+} 
 
 function initSlidingButton(selector, _config) {
     const config = {
@@ -323,5 +308,3 @@ function initSlidingButton(selector, _config) {
         reset
     }
 }
-
-appendStyle();
